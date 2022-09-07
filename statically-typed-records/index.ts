@@ -1,3 +1,20 @@
+interface IConnection<T> extends StaticallyTypedRecord<T> {
+  id: string;
+  connectionId: string;
+  ipAddress: string;
+}
+
+enum VMState {
+  Pending = 'pending',
+  Completed = 'completed',
+  Failed = 'failed'
+}
+
+class Connection implements IConnection {
+  constructor(config: Partial<IConnection>) {
+  }
+}
+
 export interface IVirtualMachine {
   id: string;
   state: VMState;
@@ -15,7 +32,7 @@ const virtualMachine = RecordFactory<IVirtualMachine>({
 export class VirtualMachine extends virtualMachine implements IVirtualMachine {
   id: string;
   state: VMState;
-  connection: Connection,
+  connection: Connection;
   screenshot: string;
 
   constructor(config: Partial<IVirtualMachine>) {
@@ -44,3 +61,22 @@ export const RecordFactory = <T>(seed: T): StaticallyTypedRecord<T> => {
 }
 
 const vm = new VirtualMachine({ id: '123', screenshot: '...' });
+
+
+// ------ Action creators ------
+
+enum ActionType {
+  AddVirtualMachine = 'AddVM',
+  RemoveVirtualMachine = 'RemoveVM'
+};
+
+interface AddVirtualMachine {
+  type: ActionType.AddVirtualMachine;
+  vm: VirtualMachine;
+}
+
+interface RemoveVirtualMachine {
+  type: ActionType.RemoveVirtualMachine;
+  id: string;
+}
+
